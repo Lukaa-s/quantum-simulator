@@ -12,6 +12,7 @@ dependencies = [
 ]
 
 [tool.poetry]
+package-mode = false # used for dependency but not for packaging
 packages = [{ include = "quantum-simulator", from = "src" }]
 
 [build-system]
