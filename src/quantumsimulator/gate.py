@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from qubit import Qubit
+from quantumsimulator.qubit import Qubit
 
 
 class Gate:

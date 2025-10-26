@@ -1,10 +1,13 @@
 import unittest
 
-#from qubit import Qubit
+from quantumsimulator.gate import H
+from quantumsimulator.qubit import Qubit
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
-        #qbit = Qubit(1,2)
+        qubit = Qubit(0, 1)
+        result = H.apply(qubit)
+        print(result)
         self.assertEqual(True, False)  # add assertion here
 
 
