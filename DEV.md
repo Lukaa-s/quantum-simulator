@@ -1,8 +1,6 @@
 # Dev
 
-## Poetry
-
-### Activation
+## Activation
 
 Powershell
 
@@ -21,3 +19,10 @@ eval $(poetry env activate)
 ```shell
 poetry install
 ```
+
+### Add dependency
+
+```shell
+poetry add numpy     
+```
+
