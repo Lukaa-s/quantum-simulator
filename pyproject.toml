@@ -3,13 +3,16 @@ name = "quantum-simulator"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Guillaume Vauvert",email = "guillaume.vauvert.pro@gmail.com"}
+    { name = "Lukas Vauvert" },
+    { name = "Guillaume Vauvert" }
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
 ]
 
+[tool.poetry]
+packages = [{ include = "quantum-simulator", from = "src" }]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
