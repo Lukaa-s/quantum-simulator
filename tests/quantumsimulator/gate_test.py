@@ -8,8 +8,8 @@ class GateTestCase(unittest.TestCase):
 
     def test_gate_H(self):
         qubit = Qubit(0, 1)
-        result = H.apply(qubit)
-        assert result == Qubit(1 / SQRT_2, -1 / SQRT_2), "aaa"
+        result = H * qubit
+        assert result == Qubit(1 / SQRT_2, -1 / SQRT_2), "wrong H q result"
 
 
 if __name__ == '__main__':

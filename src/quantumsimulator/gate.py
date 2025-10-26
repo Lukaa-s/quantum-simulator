@@ -13,7 +13,7 @@ class Gate:
 class Gate1(Gate):
     matrix: np.ndarray
 
-    def apply(self, qubit: Qubit) -> Qubit:
+    def __mul__(self, qubit: Qubit) -> Qubit:
         vector = self.matrix @ np.array([[qubit.alpha], [qubit.beta]])
         return Qubit(vector[0][0], vector[1][0])
 
