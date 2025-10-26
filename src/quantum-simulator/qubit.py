@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from typing import Literal, Union
+from numpy import  round, abs
+from numpy.random import random
 
 ZeroType = Literal[0]
 OneType = Literal[1]
@@ -11,13 +13,17 @@ type MeasureResult = Union[ZeroType, OneType]
 
 
 @dataclass(frozen=True)
-class Qubit:
-    alpha: complex
-    beta: complex
+class Qubit: 
+    alpha: complex # coefficient for |0>
+    beta: complex # coefficient for |1>
 
     # FIXME guarantee module 1
+
     def measure(self) -> MeasureResult:
-        pass
+        if random()<=abs(self.alpha)**2:
+            return ZERO
+        else:
+            return ONE
 
     def arg(self) -> float:
         pass
