@@ -1,6 +1,8 @@
 # Dev
 
-## Activation
+## Poetry
+
+### Activation
 
 Powershell
 
@@ -12,4 +14,10 @@ Bash/Zsh/Csh
 
 ```shell
 eval $(poetry env activate)
+```
+
+### Install
+
+```shell
+poetry install
 ```
