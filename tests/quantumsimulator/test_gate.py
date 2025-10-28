@@ -1,9 +1,18 @@
 import pytest
 
-from quantumsimulator.register import Register, H, SQRT_2, CNOT
+from quantumsimulator.register import Register, H, SQRT_2, CNOT, I, X, Y, Z
 
 
 class TestGate:
+
+    def test_gates(self):
+        assert I ** 2 == I
+        assert X ** 2 == I
+        assert Y ** 2 == I
+        assert Z ** 2 == I
+        #assert -1j * X @ Y @ Z == I
+        #assert Z @ X == 1j * Y
+        #assert 1j * Y == -1 * X @ Z
 
     def test_gate_H(self):
         register_input = Register(1)

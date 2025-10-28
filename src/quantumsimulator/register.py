@@ -1,5 +1,7 @@
+from typing import Self
+
 import numpy as np
-from quantumsimulator.tensor import Tensor
+from numpy.linalg import matrix_power
 
 I2 = np.identity(2)
 
@@ -31,6 +33,12 @@ class Gate1:
         self.matrix = np.array(matrix_values)
 
     @staticmethod
+    def init(matrix: np.ndarray[complex]) -> Self:
+        gate1 = Gate1([])
+        gate1.matrix = matrix
+        return gate1
+
+    @staticmethod
     def tensor_power(matrix: np.ndarray, n: int) -> np.ndarray:
         if n == 0:
             return np.identity(1)
@@ -46,11 +54,48 @@ class Gate1:
         values = transform_matrix.dot(register.values)
         return Register(register.n_qubits, values)
 
+    def __mul__(self, other) -> Self:
+        return Gate1(self.matrix * other)
+
+    def __rmul__(self, other) -> Self:
+        return Gate1(self.matrix * other)
+
+    def __truediv__(self, other) -> Self:
+        return Gate1(self.matrix / other)
+
+    def __matmul__(self, other) -> Self:
+        return Gate1(self.matrix @ other)
+
+    def __pow__(self, power, modulo=None):
+        return Gate1.init(matrix_power(self.matrix, power))
+
+    def __str__(self):
+        return self.matrix.__str__()
+
+    def __repr__(self):
+        return self.matrix.__repr__()
+
+    def __eq__(self, other):
+        return self.matrix.__eq__(other.matrix).all()
+
 
 SQRT_2 = np.sqrt(2)
 
-H = Gate1([[1 / SQRT_2, 1 / SQRT_2],
-           [1 / SQRT_2, -1 / SQRT_2]])
+H = Gate1([[1, 1],
+           [1, -1]]) / SQRT_2
+I = Gate1([[1, 0],
+           [0, 1]])
+X = Gate1([[0, 1],
+           [1, 0]])
+NOT = X
+Y = Gate1([[0, -1j],
+           [1j, 0]])
+Z = Gate1([[1, 0],
+           [0, -1]])
+S = Gate1([[1, 0],
+           [0, -1j]])
+T = Gate1([[1, 0],
+           [0, SQRT_2 / 2]])
 
 
 class Gate2:
