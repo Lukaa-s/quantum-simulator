@@ -64,7 +64,7 @@ class Gate1:
         return Gate1(self.matrix / other)
 
     def __matmul__(self, other) -> Self:
-        return Gate1(self.matrix @ other)
+        return Gate1(self.matrix @ other.matrix)
 
     def __pow__(self, power, modulo=None):
         return Gate1.init(matrix_power(self.matrix, power))
