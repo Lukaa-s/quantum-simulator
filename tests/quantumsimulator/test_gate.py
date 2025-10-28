@@ -19,7 +19,7 @@ class TestGate:
         register_input.set_value(1, 1)
         register_input.set_value(2, 1)
         register_input.set_value(3, 0)
-        register_output = CNOT.apply(register_input)
+        register_output = CNOT.apply(register_input,[0,1])
         assert register_output.get_value(0) == 0, "wrong H 0 result"
         assert register_output.get_value(1) == 1 + 0j, "wrong H 1 result"
         assert register_output.get_value(2) == 0, "wrong H 2 result"
@@ -35,6 +35,6 @@ class TestGate:
         register_input = Register(2)
         for idx in range(4):
             register_input.set_value(idx, input[idx] * 0.5)
-        register_output = CNOT.apply(register_input)
+        register_output = CNOT.apply(register_input,[0,1])
         for idx in range(4):
             assert register_output.get_value(idx) == expected[idx] * 0.5, f"wrong CNOT result {idx}"
