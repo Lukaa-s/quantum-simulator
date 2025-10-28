@@ -9,7 +9,7 @@ OneType = Literal[1]
 ZERO: ZeroType = 0
 ONE: OneType = 1
 
-type MeasureResult = Union[ZeroType, OneType]
+MeasureResult = Union[ZeroType, OneType]
 
 
 @dataclass(frozen=True)
