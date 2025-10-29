@@ -21,3 +21,12 @@ class Register:
 
     def get_value(self, idx: QubitIndex) -> complex:
         return self.values[idx]
+
+    def __str__(self):
+        return self.values.__str__()
+
+    def __repr__(self):
+        return self.values.__repr__()
+
+    def __eq__(self, other):
+        return np.allclose(self.values, other.values)
