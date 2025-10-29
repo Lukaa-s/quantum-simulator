@@ -51,6 +51,11 @@ class Gate:
         u_total = P.T @ u_tild @ P
         return Register(register.n_qubits, u_total @ register.values)
 
+    def apply_on_all_qubits(self, register: Register) -> Register:
+        for q_idx in range(register.n_qubits):
+            register = self.apply(register, [q_idx])
+        return register
+
     def __mul__(self, other) -> Self:
         return Gate(self.matrix * other)
 

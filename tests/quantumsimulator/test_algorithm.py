@@ -3,6 +3,7 @@ from math import sqrt
 import numpy as np
 
 from quantumsimulator.algorithm import Grover
+from quantumsimulator.gate import Gate
 from quantumsimulator.register import Register
 
 
@@ -16,4 +17,11 @@ class TestAlgorithm:
 
     def test_grover(self):
         grover = Grover()
-        grover.run(1)
+        U = [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, -1, 0],
+            [0, 0, 0, 1],
+        ]
+        register = grover.run(2, U)
+        print(register)

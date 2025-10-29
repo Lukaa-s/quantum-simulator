@@ -30,3 +30,6 @@ class Register:
 
     def __eq__(self, other):
         return np.allclose(self.values, other.values)
+
+    def norm(self):
+        return np.linalg.norm(self.values)
