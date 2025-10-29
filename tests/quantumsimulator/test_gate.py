@@ -1,6 +1,8 @@
 import pytest
 import numpy as np
-from quantumsimulator.register import Register, H, SQRT_2, CNOT, Gate_n
+from quantumsimulator.gates import H, SQRT_2, CNOT, I, X, Y, Z, Gate_n
+from quantumsimulator.register import Register
+
 
 def toffoli_3x3():
     """Matrice 8x8 de la Toffoli (CCNOT) avec contrôles sur les deux bits
@@ -16,12 +18,23 @@ def toffoli_3x3():
 
 class TestGate:
 
+    @pytest.mark.parametrize("label,right,left", [
+        ("I ** 2 == I", I ** 2, I),
+        ("X ** 2 == I", X ** 2, I),
+        ("Y ** 2 == I", Y ** 2, I),
+        ("Z ** 2 == I", Z ** 2, I),
+        ("-1j * X @ Y @ Z == I", -1j * X @ Y @ Z, I),
+        ("Z @ X == 1j * Y", Z @ X, 1j * Y),
+        ("1j * Y == -1 * X @ Z", 1j * Y, -1 * X @ Z),
+    ])
+    def test_gates(self, label, right, left):
+        assert right == left, label
 
     def test_gate_H(self):
         register_input = Register(1)
         register_input.set_value(0, 0)
         register_input.set_value(1, 1)
-        register_output = H.apply(register_input, 0)
+        register_output = H.apply(register_input, [0])
         assert register_output.get_value(0) == 1 / SQRT_2, "wrong H 0 result"
         assert register_output.get_value(1) == -1 / SQRT_2, "wrong H 1 result"
 
@@ -31,7 +44,7 @@ class TestGate:
         register_input.set_value(1, 1)
         register_input.set_value(2, 1)
         register_input.set_value(3, 0)
-        register_output = CNOT.apply(register_input,[0,1])
+        register_output = CNOT.apply(register_input, [0, 1])
         assert register_output.get_value(0) == 0, "wrong H 0 result"
         assert register_output.get_value(1) == 1 + 0j, "wrong H 1 result"
         assert register_output.get_value(2) == 0, "wrong H 2 result"
@@ -47,7 +60,7 @@ class TestGate:
         register_input = Register(2)
         for idx in range(4):
             register_input.set_value(idx, input[idx] * 0.5)
-        register_output = CNOT.apply(register_input,[0,1])
+        register_output = CNOT.apply(register_input, [0, 1])
         for idx in range(4):
             assert register_output.get_value(idx) == expected[idx] * 0.5, f"wrong CNOT result {idx}"
 
