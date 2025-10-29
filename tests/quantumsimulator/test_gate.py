@@ -1,6 +1,7 @@
 import pytest
 
-from quantumsimulator.register import Register, H, SQRT_2, CNOT, I, X, Y, Z
+from quantumsimulator.gates import H, SQRT_2, CNOT, I, X, Y, Z
+from quantumsimulator.register import Register
 
 
 class TestGate:
