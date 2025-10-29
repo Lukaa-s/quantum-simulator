@@ -28,84 +28,6 @@ class Register:
         return self.values[idx]
 
 
-class Gate1:
-    def __init__(self, matrix_values: list[list[complex]]):
-        self.matrix = np.array(matrix_values)
-
-    @staticmethod
-    def init(matrix: np.ndarray[complex]) -> Self:
-        gate1 = Gate1([])
-        gate1.matrix = matrix
-        return gate1
-
-    @staticmethod
-    def tensor_power(matrix: np.ndarray, n: int) -> np.ndarray:
-        if n == 0:
-            return np.identity(1)
-        if n == 1:
-            return np.identity(np.size(matrix))
-        return np.tensordot(matrix, Gate1.tensor_power(matrix, n - 1))
-
-    def apply(self, register: Register, qubit_index: QubitIndex) -> Register:
-        identity_before = Gate1.tensor_power(I2, qubit_index)
-        identity_after = Gate1.tensor_power(I2, register.n_qubits - qubit_index - 1)
-        before_dot_matrix = np.kron(identity_before, self.matrix)
-        transform_matrix = np.kron(before_dot_matrix, identity_after)
-        values = transform_matrix.dot(register.values)
-        return Register(register.n_qubits, values)
-
-    def __mul__(self, other) -> Self:
-        return Gate1(self.matrix * other)
-
-    def __rmul__(self, other) -> Self:
-        return Gate1(self.matrix * other)
-
-    def __truediv__(self, other) -> Self:
-        return Gate1(self.matrix / other)
-
-    def __matmul__(self, other) -> Self:
-        return Gate1(self.matrix @ other.matrix)
-
-    def __pow__(self, power, modulo=None):
-        return Gate1.init(matrix_power(self.matrix, power))
-
-    def __str__(self):
-        return self.matrix.__str__()
-
-    def __repr__(self):
-        return self.matrix.__repr__()
-
-    def __eq__(self, other):
-        return self.matrix.__eq__(other.matrix).all()
-
-
-SQRT_2 = np.sqrt(2)
-
-H = Gate1([[1, 1],
-           [1, -1]]) / SQRT_2
-I = Gate1([[1, 0],
-           [0, 1]])
-X = Gate1([[0, 1],
-           [1, 0]])
-NOT = X
-Y = Gate1([[0, -1j],
-           [1j, 0]])
-Z = Gate1([[1, 0],
-           [0, -1]])
-S = Gate1([[1, 0],
-           [0, -1j]])
-T = Gate1([[1, 0],
-           [0, SQRT_2 / 2]])
-
-
-class Gate2:
-    def __init__(self, matrix_values: list[list[complex]]):
-        self.matrix = np.array(matrix_values)
-
-    def apply(self, register: Register, qubit_index1: QubitIndex, qubit_index2: QubitIndex) -> Register:
-        pass
-
-
 def binary_conversion(n: int, length: int) -> list[int]:
     """Convert n to binary representation with given length."""
 
@@ -129,6 +51,12 @@ class Gate_n:
     def __init__(self, matrix_values: list[list[complex]]):
         self.matrix = np.array(matrix_values)
 
+    @staticmethod
+    def init(matrix: np.ndarray[complex]) -> Self:
+        gate_n = Gate_n([])
+        gate_n.matrix = matrix
+        return gate_n
+
     def apply(self, register: Register, qubit_indices: list[QubitIndex]) -> Register:
         u = self.matrix
 
@@ -145,12 +73,49 @@ class Gate_n:
         u_total = P.T @ u_tild @ P
         return Register(register.n_qubits, u_total @ register.values)
 
+    def __mul__(self, other) -> Self:
+        return Gate_n(self.matrix * other)
 
-CNOT = Gate2([[1, 0, 0, 0],
-              [0, 1, 0, 0],
-              [0, 0, 0, 1],
-              [0, 0, 1, 0],
-              ])
+    def __rmul__(self, other) -> Self:
+        return Gate_n(self.matrix * other)
+
+    def __truediv__(self, other) -> Self:
+        return Gate_n(self.matrix / other)
+
+    def __matmul__(self, other) -> Self:
+        return Gate_n(self.matrix @ other.matrix)
+
+    def __pow__(self, power, modulo=None):
+        return Gate_n.init(matrix_power(self.matrix, power))
+
+    def __str__(self):
+        return self.matrix.__str__()
+
+    def __repr__(self):
+        return self.matrix.__repr__()
+
+    def __eq__(self, other):
+        return self.matrix.__eq__(other.matrix).all()
+
+
+SQRT_2 = np.sqrt(2)
+
+H = Gate_n([[1, 1],
+           [1, -1]]) / SQRT_2
+I = Gate_n([[1, 0],
+           [0, 1]])
+X = Gate_n([[0, 1],
+           [1, 0]])
+NOT = X
+Y = Gate_n([[0, -1j],
+           [1j, 0]])
+Z = Gate_n([[1, 0],
+           [0, -1]])
+S = Gate_n([[1, 0],
+           [0, -1j]])
+T = Gate_n([[1, 0],
+           [0, SQRT_2 / 2]])
+
 
 CNOT = Gate_n([[1, 0, 0, 0],
                [0, 1, 0, 0],
