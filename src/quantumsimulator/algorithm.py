@@ -1,9 +1,10 @@
 from abc import ABC
-from math import sqrt, pi, ceil, isclose, floor
+from math import sqrt, pi, isclose, floor
 
 import numpy as np
 
-from quantumsimulator.gates import H, X, Z
+from quantumsimulator.gates import H, X
+from quantumsimulator.operator import Operator, cz
 from quantumsimulator.register import Register
 
 
@@ -22,23 +23,21 @@ class Grover(Algorithm):
         register = H.apply_on_all_qubits(register)
         return register
 
-    def run(self, n_qubits: int, U: np.ndarray[complex]):
-        CZ = np.identity(2 ** n_qubits, dtype=complex)
-        CZ[-1, -1] = -1
+    def run(self, n_qubits: int, U: Operator):
+        CZ = cz(n_qubits)
         register = Grover._create_init_state(n_qubits)
         nb_iter = floor(pi / 4 * sqrt(2 ** n_qubits))
         assert isclose(register.norm(), 1)
         for iter in range(nb_iter):
             # H X Z X H
-            register = Register(register.n_qubits, U @ register.values)
-            # register = U.apply_on_all_qubits(register)
+            register = U @ register
             assert isclose(register.norm(), 1)
             register = H.apply_on_all_qubits(register)
             assert isclose(register.norm(), 1)
             register = X.apply_on_all_qubits(register)
             assert isclose(register.norm(), 1)
-            register = Register(register.n_qubits,CZ @ register.values)
-            #assert isclose(register.norm(), 1)
+            register = CZ @ register
+            assert isclose(register.norm(), 1)
             register = X.apply_on_all_qubits(register)
             assert isclose(register.norm(), 1)
             register = H.apply_on_all_qubits(register)

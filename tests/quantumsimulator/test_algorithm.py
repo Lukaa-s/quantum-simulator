@@ -3,7 +3,7 @@ from math import sqrt
 import numpy as np
 
 from quantumsimulator.algorithm import Grover
-from quantumsimulator.gate import Gate
+from quantumsimulator.operator import Operator
 from quantumsimulator.register import Register
 
 
@@ -15,7 +15,6 @@ class TestAlgorithm:
         value = 1 / sqrt(2 ** n_qubits)
         assert init_state == Register(n_qubits, np.full(2 ** n_qubits, value, dtype=complex))
 
-
     def test_grover(self):
         grover = Grover()
         U = [
@@ -24,5 +23,5 @@ class TestAlgorithm:
             [0, 0, -1, 0],
             [0, 0, 0, 1],
         ]
-        register = grover.run(2, U)
-        print(register)
+        register = grover.run(2, Operator(2, np.array(U)))
+        assert np.isclose(register.values, np.array([0, 0, -1, 0])).all()
