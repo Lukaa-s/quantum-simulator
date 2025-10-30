@@ -15,6 +15,7 @@ class TestAlgorithm:
         value = 1 / sqrt(2 ** n_qubits)
         assert init_state == Register(n_qubits, np.full(2 ** n_qubits, value, dtype=complex))
 
+
     def test_grover(self):
         grover = Grover()
         U = [

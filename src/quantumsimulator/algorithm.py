@@ -1,5 +1,5 @@
 from abc import ABC
-from math import sqrt, pi, ceil, isclose
+from math import sqrt, pi, ceil, isclose, floor
 
 import numpy as np
 
@@ -23,8 +23,10 @@ class Grover(Algorithm):
         return register
 
     def run(self, n_qubits: int, U: np.ndarray[complex]):
+        CZ = np.identity(2 ** n_qubits, dtype=complex)
+        CZ[-1, -1] = -1
         register = Grover._create_init_state(n_qubits)
-        nb_iter = ceil(pi / 4 * sqrt(2 ** n_qubits))
+        nb_iter = floor(pi / 4 * sqrt(2 ** n_qubits))
         assert isclose(register.norm(), 1)
         for iter in range(nb_iter):
             # H X Z X H
@@ -35,8 +37,8 @@ class Grover(Algorithm):
             assert isclose(register.norm(), 1)
             register = X.apply_on_all_qubits(register)
             assert isclose(register.norm(), 1)
-            register = Z.apply_on_all_qubits(register)
-            assert isclose(register.norm(), 1)
+            register = Register(register.n_qubits,CZ @ register.values)
+            #assert isclose(register.norm(), 1)
             register = X.apply_on_all_qubits(register)
             assert isclose(register.norm(), 1)
             register = H.apply_on_all_qubits(register)
