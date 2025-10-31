@@ -1,10 +1,11 @@
-import numpy as np
+from numpy import isclose
 
 from quantumsimulator.register import Register
+from quantumsimulator.types import CArray, QubitIndex
 
 
 class Operator:
-    def __init__(self, n_qubits: int, values: np.ndarray[complex]):
+    def __init__(self, n_qubits: QubitIndex, values: CArray):
         self.n_qubits = n_qubits
         self.values = values
 
@@ -13,8 +14,7 @@ class Operator:
             return Register(self.n_qubits, self.values @ other.values)
         raise NotImplemented
 
-
-def cz(n_qubits: int) -> Operator:
-    matrix = np.identity(2 ** n_qubits, dtype=complex)
-    matrix[-1, -1] = -1
-    return Operator(n_qubits, matrix)
+    def __eq__(self, other):
+        if isinstance(other, Operator):
+            return self.n_qubits == other.n_qubits and isclose(self.values, other.values).all()
+        raise NotImplemented

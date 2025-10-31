@@ -1,16 +1,18 @@
+from typing import Any
+
 import numpy as np
 
-I2 = np.identity(2)
+from quantumsimulator.types import CArray, Complex, QubitIndex
 
-QubitIndex = int
+I2 = np.identity(2)
 
 
 class Register:
 
-    def __init__(self, n_qubits: int, values: np.ndarray[complex] = np.zeros(0)):
+    def __init__(self, n_qubits: QubitIndex, values: CArray = np.zeros(0)):
         self.n_qubits = n_qubits
         if values.size == 0:
-            self.values = np.zeros(2 ** n_qubits, dtype=complex)
+            self.values = np.zeros(2 ** n_qubits, dtype=Complex)
         else:
             if values.size != 2 ** n_qubits:
                 raise Exception(f"size: {values.size} != {2 ** n_qubits}")
@@ -19,7 +21,7 @@ class Register:
     def set_value(self, idx: QubitIndex, value: complex):
         self.values[idx] = value
 
-    def get_value(self, idx: QubitIndex) -> complex:
+    def get_value(self, idx: QubitIndex) -> Complex:
         return self.values[idx]
 
     def __str__(self):
@@ -29,7 +31,9 @@ class Register:
         return self.values.__repr__()
 
     def __eq__(self, other):
+        if not isinstance(other, Register):
+            raise NotImplemented
         return np.allclose(self.values, other.values)
 
-    def norm(self):
+    def norm(self) -> np.floating[Any]:
         return np.linalg.norm(self.values)

@@ -1,9 +1,11 @@
+from numbers import Number
 from typing import Self
 
 import numpy as np
 from numpy.linalg import matrix_power
 
-from quantumsimulator.register import Register, QubitIndex
+from quantumsimulator.register import Register
+from quantumsimulator.types import CArray, Complex, MatrixValues, QubitIndex
 
 
 def binary_conversion(n: int, length: int) -> list[int]:
@@ -26,20 +28,19 @@ def inverse_binary_conversion(bin_repr: list[int]) -> int:
 
 
 class Gate:
-    def __init__(self, matrix_values: list[list[complex]]):
-        self.matrix = np.array(matrix_values)
+    def __init__(self, matrix: CArray):
+        self.matrix = matrix
 
     @staticmethod
-    def init(matrix: np.ndarray[complex]) -> Self:
-        gate = Gate([])
-        gate.matrix = matrix
+    def build(matrix_values: MatrixValues) -> Self:
+        gate = Gate(np.array(matrix_values, dtype=Complex))
         return gate
 
     def apply(self, register: Register, qubit_indices: list[QubitIndex]) -> Register:
         u = self.matrix
 
         qubit_positions = [k for k in range(register.n_qubits) if k not in qubit_indices] + qubit_indices
-        P = np.zeros((2 ** register.n_qubits, 2 ** register.n_qubits), dtype=complex)
+        P = np.zeros((2 ** register.n_qubits, 2 ** register.n_qubits), dtype=Complex)
         for i in range(2 ** register.n_qubits):
             # convert in binary
             bin_repr = binary_conversion(i, register.n_qubits)
@@ -47,7 +48,7 @@ class Gate:
             j = inverse_binary_conversion(permuted_bin_repr)
             P[j, i] = 1
 
-        u_tild = np.kron(np.identity(2 ** (register.n_qubits - len(qubit_indices)), dtype=complex), u)
+        u_tild = np.kron(np.identity(2 ** (register.n_qubits - len(qubit_indices)), dtype=Complex), u)
         u_total = P.T @ u_tild @ P
         return Register(register.n_qubits, u_total @ register.values)
 
@@ -57,19 +58,27 @@ class Gate:
         return register
 
     def __mul__(self, other) -> Self:
+        if not isinstance(other, Number):
+            raise NotImplemented
         return Gate(self.matrix * other)
 
     def __rmul__(self, other) -> Self:
+        if not isinstance(other, Number):
+            raise NotImplemented
         return Gate(self.matrix * other)
 
     def __truediv__(self, other) -> Self:
+        if not isinstance(other, Number):
+            raise NotImplemented
         return Gate(self.matrix / other)
 
     def __matmul__(self, other) -> Self:
+        if not isinstance(other, Gate):
+            raise NotImplemented
         return Gate(self.matrix @ other.matrix)
 
     def __pow__(self, power, modulo=None):
-        return Gate.init(matrix_power(self.matrix, power))
+        return Gate(matrix_power(self.matrix, power))
 
     def __str__(self):
         return self.matrix.__str__()
@@ -78,4 +87,6 @@ class Gate:
         return self.matrix.__repr__()
 
     def __eq__(self, other):
+        if not isinstance(other, Gate):
+            raise NotImplemented
         return self.matrix.__eq__(other.matrix).all()
