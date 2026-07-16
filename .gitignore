@@ -209,5 +209,6 @@ __marimo__/
 # IdeaProject
 /quantum-simulator.iml
 /.idea
+/out
 
 /.env
