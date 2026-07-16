@@ -19,7 +19,7 @@ Z = Gate.build([[1, 0],
 S = Gate.build([[1, 0],
                 [0, -1j]])
 T = Gate.build([[1, 0],
-                [0, SQRT_2 / 2]])
+                [0, np.exp(1j * np.pi / 4)]])
 
 CNOT = Gate.build([[1, 0, 0, 0],
                    [0, 1, 0, 0],
